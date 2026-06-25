@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LVE — Solicitud de Staff</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap');
+  :root{--bg:#07070d;--card:#141420;--border:#222235;--gold:#f5c842;--green:#27ae60;--text:#dde0f0;--muted:#52527a;--white:#fff;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+  .hero{position:relative;overflow:hidden;padding:52px 32px 44px;text-align:center;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,200,66,.09) 0%,transparent 60%);}
+  .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at 50% 50%,black 20%,transparent 70%);}
+  .hero-inner{position:relative;z-index:2;max-width:640px;margin:0 auto;}
+  .badge{display:inline-block;padding:5px 18px;border-radius:20px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);font-size:10px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,8vw,76px);line-height:.92;color:var(--white);margin-bottom:8px;}
+  .hero-title .g{color:var(--gold);}
+  .hero-sub{color:var(--muted);font-size:14px;line-height:1.6;}
+
+  .form-wrap{max-width:660px;margin:0 auto;padding:40px 32px 80px;}
+
+  .section-eye{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:6px;}
+  .section-title em{color:var(--gold);font-style:normal;}
+  .section-sub{color:var(--muted);font-size:13px;margin-bottom:28px;line-height:1.6;}
+
+  .field{margin-bottom:22px;}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:0.5px;}
+  .field label .req{color:var(--gold);margin-left:3px;}
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field textarea,
+  .field select{width:100%;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;transition:border-color .2s;outline:none;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold);}
+  .field select option{background:#141420;}
+  .field textarea{resize:vertical;min-height:90px;line-height:1.6;}
+
+  .divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
+  .group-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+  .infobox{background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.18);border-radius:10px;padding:12px 16px;font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:20px;}
+  .infobox strong{color:var(--gold);}
+
+  .btn-submit{width:100%;padding:15px;background:var(--gold);color:var(--bg);border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:24px;}
+  .btn-submit:hover{background:#ffd84d;transform:translateY(-1px);}
+
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  @media(max-width:600px){.form-wrap{padding:28px 16px 60px;}.hero{padding:48px 20px 36px;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="badge">⚙️ Selección de Staff · LVE Spain</div>
+    <div class="hero-title">ÚNETE AL<br><span class="g">STAFF LVE</span></div>
+    <p class="hero-sub">Completa el cuestionario para optar a un puesto en el equipo organizador de la Liga Virtual Española.</p>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <form action="https://formspree.io/f/xwvdllvq" method="POST">
+
+    <!-- DATOS PERSONALES -->
+    <div class="section-eye">Información personal</div>
+    <div class="section-title">¿Quién <em>eres</em>?</div>
+    <p class="section-sub">Cuéntanos quién eres y cómo contactarte.</p>
+
+    <div class="field">
+      <label>Nick / Nombre en LVE <span class="req">*</span></label>
+      <input type="text" name="nick" placeholder="Tu nombre o nick en el juego" required />
+    </div>
+
+    <div class="field">
+      <label>Número de WhatsApp <span class="req">*</span></label>
+      <input type="tel" name="whatsapp" placeholder="Para contactarte si eres seleccionado" required />
+    </div>
+
+    <hr class="divider">
+
+    <!-- ROL -->
+    <div class="section-eye">Rol</div>
+    <div class="section-title">¿A qué rol <em>aspiras</em>?</div>
+    <p class="section-sub">Selecciona el puesto para el que quieres presentar tu candidatura.</p>
+
+    <div class="field">
+      <label>Rol solicitado <span class="req">*</span></label>
+      <select name="rol" required>
+        <option value="" disabled selected>Selecciona un rol...</option>
+        <option value="Árbitro / Juez">⚖️ Árbitro / Juez</option>
+        <option value="Gestor de App (4League)">📊 Gestor de App (4League)</option>
+        <option value="Community Manager">📱 Community Manager</option>
+        <option value="Varios roles">⭐ Varios roles</option>
+      </select>
+    </div>
+
+    <hr class="divider">
+
+    <!-- PREGUNTAS GENERALES -->
+    <div class="group-label">Preguntas generales</div>
+
+    <div class="field">
+      <label>¿Cuántas temporadas llevas en LVE o ligas de Clubes Pro? <span class="req">*</span></label>
+      <select name="temporadas" required>
+        <option value="" disabled selected>Selecciona...</option>
+        <option>Es mi primera temporada</option>
+        <option>1-2 temporadas</option>
+        <option>3-5 temporadas</option>
+        <option>Más de 5 temporadas</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Eres o has sido capitán de algún equipo esta temporada? <span class="req">*</span></label>
+      <select name="capitan" required>
+        <option value="" disabled selected>Selecciona...</option>
+        <option>Sí, soy capitán actualmente</option>
+        <option>Lo he sido pero ya no</option>
+        <option>No, nunca he sido capitán</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Cuántas horas al día puedes dedicar al staff? <span class="req">*</span></label>
+      <select name="horas_disponibles" required>
+        <option value="" disabled selected>Selecciona...</option>
+        <option>Menos de 1 hora</option>
+        <option>1-2 horas</option>
+        <option>2-4 horas</option>
+        <option>Más de 4 horas</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Te comprometes a mantener el rol toda la temporada? <span class="req">*</span></label>
+      <select name="compromiso" required>
+        <option value="" disabled selected>Selecciona...</option>
+        <option>Sí, me comprometo al 100%</option>
+        <option>Sí, aunque puede haber semanas con menos disponibilidad</option>
+        <option>No estoy seguro/a</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Por qué quieres formar parte del staff de LVE? <span class="req">*</span></label>
+      <textarea name="motivacion" placeholder="Cuéntanos tu motivación (mínimo 2-3 frases)..." required></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- PREGUNTAS ÁRBITRO -->
+    <div class="group-label">Preguntas — Árbitro (responde solo si aplica a tu rol)</div>
+
+    <div class="field">
+      <label>¿Has leído la normativa completa de LVE?</label>
+      <select name="arbitro_normativa">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, la conozco bien</option>
+        <option>La he leído pero no me la sé de memoria</option>
+        <option>No la he leído aún</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Un equipo reclama un W.O. pero no tiene pruebas. ¿Qué harías?</label>
+      <textarea name="arbitro_wo" placeholder="Solo si aspiras al rol de árbitro..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>¿Podrías sancionar a un amigo si incumple el reglamento?</label>
+      <select name="arbitro_amigo">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, el reglamento es igual para todos</option>
+        <option>Dependería del caso</option>
+        <option>Me costaría, preferiría abstenerme</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Tienes experiencia resolviendo conflictos en otras ligas?</label>
+      <textarea name="arbitro_experiencia" placeholder="Solo si aspiras al rol de árbitro..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- PREGUNTAS APP -->
+    <div class="group-label">Preguntas — Gestor de App (responde solo si aplica)</div>
+
+    <div class="field">
+      <label>¿Has usado 4League antes?</label>
+      <select name="app_4league">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, la manejo bien</option>
+        <option>La he visto pero no la he usado</option>
+        <option>No la conozco, pero aprendo rápido</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Puedes actualizar resultados en menos de 24h tras cada partido?</label>
+      <select name="app_24h">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, sin problema</option>
+        <option>La mayoría de veces sí</option>
+        <option>Puede haber excepciones frecuentes</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Qué harías si un equipo te envía un resultado que no coincide con la captura?</label>
+      <textarea name="app_conflicto" placeholder="Solo si aspiras al rol de gestor de app..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- PREGUNTAS CM -->
+    <div class="group-label">Preguntas — Community Manager (responde solo si aplica)</div>
+
+    <div class="field">
+      <label>¿Qué redes sociales manejas habitualmente?</label>
+      <select name="cm_rrss">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Instagram principalmente</option>
+        <option>Instagram + TikTok</option>
+        <option>Varias plataformas con soltura</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Usas Canva u otra herramienta de diseño?</label>
+      <select name="cm_diseno">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, uso Canva con soltura</option>
+        <option>Uso otra herramienta (Photoshop, CapCut...)</option>
+        <option>No uso herramientas de diseño</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Puedes publicar mínimo 3-4 veces por semana?</label>
+      <select name="cm_publicaciones">
+        <option value="" selected>No aplica / Selecciona...</option>
+        <option>Sí, sin problema</option>
+        <option>Sí, aunque alguna semana menos</option>
+        <option>No puedo garantizarlo</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>¿Tienes experiencia llevando redes de alguna comunidad?</label>
+      <textarea name="cm_experiencia" placeholder="Solo si aspiras al rol de CM..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Propón una idea de contenido que publicarías para LVE esta semana</label>
+      <textarea name="cm_idea" placeholder="Solo si aspiras al rol de CM..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- EXTRA -->
+    <div class="field">
+      <label>¿Algo más que quieras añadir?</label>
+      <textarea name="extra" placeholder="Cualquier información adicional (opcional)..."></textarea>
+    </div>
+
+    <div class="infobox">
+      ✅ Al enviar confirmas que has leído el reglamento de LVE, que la información es verídica y que te comprometes a respetar las normas del staff si eres seleccionado/a.
+    </div>
+
+    <button type="submit" class="btn-submit">🚀 Enviar candidatura</button>
+
+  </form>
+</div>
+
+</body>
+</html>
