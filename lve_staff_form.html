@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LVE — Solicitud de Staff</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #07070d;
+    --card: #141420;
+    --card2: #1a1a28;
+    --border: #222235;
+    --gold: #f5c842;
+    --gold2: #c9971a;
+    --green: #27ae60;
+    --blue: #2d86d4;
+    --purple: #8e44ad;
+    --red: #e03535;
+    --text: #dde0f0;
+    --muted: #52527a;
+    --white: #fff;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+  /* HERO */
+  .hero {
+    position:relative; overflow:hidden;
+    padding:56px 32px 48px; text-align:center;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 50% 0%,rgba(245,200,66,.09) 0%,transparent 60%);
+  }
+  .hero-grid {
+    position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at 50% 40%,black 20%,transparent 70%);
+  }
+  .hero-inner { position:relative; z-index:2; max-width:640px; margin:0 auto; }
+  .badge {
+    display:inline-block; padding:5px 18px; border-radius:20px;
+    background:rgba(245,200,66,.1); border:1px solid rgba(245,200,66,.25);
+    font-size:10px; font-weight:700; letter-spacing:3px; color:var(--gold);
+    text-transform:uppercase; margin-bottom:18px;
+  }
+  .hero-title {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(44px,8vw,78px); line-height:.92;
+    color:var(--white); margin-bottom:8px;
+  }
+  .hero-title .g { color:var(--gold); }
+  .hero-sub { color:var(--muted); font-size:14px; line-height:1.6; }
+
+  /* FORM CONTAINER */
+  .form-wrap {
+    max-width:680px; margin:0 auto;
+    padding:40px 32px 80px;
+  }
+
+  /* STEP INDICATOR */
+  .steps {
+    display:flex; align-items:center; gap:0;
+    margin-bottom:40px;
+  }
+  .step-item {
+    display:flex; flex-direction:column; align-items:center;
+    gap:6px; flex:1; cursor:pointer;
+  }
+  .step-circle {
+    width:36px; height:36px; border-radius:50%;
+    background:var(--card); border:2px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif; font-size:16px;
+    color:var(--muted); transition:all .2s;
+  }
+  .step-item.active .step-circle { border-color:var(--gold); color:var(--gold); background:rgba(245,200,66,.1); }
+  .step-item.done .step-circle { border-color:var(--green); color:var(--white); background:var(--green); }
+  .step-label { font-size:10px; color:var(--muted); text-align:center; letter-spacing:1px; text-transform:uppercase; }
+  .step-item.active .step-label { color:var(--gold); }
+  .step-line { flex:1; height:2px; background:var(--border); margin-bottom:18px; }
+  .step-line.done { background:var(--green); }
+
+  /* PAGES */
+  .form-page { display:none; }
+  .form-page.active { display:block; }
+
+  /* SECTION TITLE */
+  .section-eye { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; margin-bottom:6px; }
+  .section-title em { color:var(--gold); font-style:normal; }
+  .section-sub { color:var(--muted); font-size:13px; margin-bottom:28px; line-height:1.6; }
+
+  /* ROL SELECTOR */
+  .rol-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+  .rol-card {
+    background:var(--card); border:2px solid var(--border);
+    border-radius:14px; padding:20px 16px; text-align:center;
+    cursor:pointer; transition:all .2s;
+  }
+  .rol-card:hover { border-color:rgba(245,200,66,.3); transform:translateY(-2px); }
+  .rol-card.selected { border-color:var(--gold); background:rgba(245,200,66,.07); }
+  .rol-icon { font-size:32px; margin-bottom:10px; display:block; }
+  .rol-name { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1px; color:var(--white); margin-bottom:4px; }
+  .rol-desc { font-size:11px; color:var(--muted); line-height:1.5; }
+  input[type="radio"].rol-radio { display:none; }
+
+  /* FORM FIELDS */
+  .field { margin-bottom:22px; }
+  .field label {
+    display:block; font-size:12px; font-weight:700;
+    color:var(--text); margin-bottom:8px; letter-spacing:0.5px;
+  }
+  .field label .req { color:var(--gold); margin-left:3px; }
+  .field input[type="text"],
+  .field input[type="number"],
+  .field textarea,
+  .field select {
+    width:100%; padding:12px 16px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; color:var(--text); font-size:14px;
+    font-family:'Inter',sans-serif;
+    transition:border-color .2s;
+    outline:none;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color:var(--gold);
+  }
+  .field textarea { resize:vertical; min-height:90px; line-height:1.6; }
+  .field select option { background:var(--card2); }
+
+  /* RADIO GROUP */
+  .radio-group { display:flex; flex-direction:column; gap:8px; }
+  .radio-opt {
+    display:flex; align-items:center; gap:12px;
+    padding:11px 16px; border-radius:10px;
+    background:var(--card); border:1px solid var(--border);
+    cursor:pointer; transition:all .2s;
+  }
+  .radio-opt:hover { border-color:rgba(245,200,66,.25); }
+  .radio-opt.selected { border-color:var(--gold); background:rgba(245,200,66,.07); }
+  .radio-dot {
+    width:18px; height:18px; border-radius:50%;
+    border:2px solid var(--border); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .radio-opt.selected .radio-dot { border-color:var(--gold); background:var(--gold); }
+  .radio-opt.selected .radio-dot::after { content:''; width:6px; height:6px; border-radius:50%; background:var(--bg); }
+  .radio-text { font-size:13px; font-weight:500; }
+
+  /* DIVIDER */
+  .field-divider {
+    border:none; border-top:1px solid var(--border);
+    margin:28px 0;
+  }
+  .field-section-label {
+    font-size:10px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--gold); font-weight:700; margin-bottom:20px;
+    padding-bottom:10px; border-bottom:1px solid var(--border);
+  }
+
+  /* BUTTONS */
+  .btn-row { display:flex; gap:12px; margin-top:32px; }
+  .btn {
+    flex:1; padding:14px; border-radius:10px;
+    font-size:14px; font-weight:700; cursor:pointer;
+    border:none; transition:all .2s; font-family:'Inter',sans-serif;
+  }
+  .btn-primary { background:var(--gold); color:var(--bg); }
+  .btn-primary:hover { background:#ffd84d; transform:translateY(-1px); }
+  .btn-secondary { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .btn-secondary:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* SUCCESS */
+  .success-box {
+    text-align:center; padding:48px 24px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; border-top:3px solid var(--green);
+  }
+  .success-icon { font-size:56px; margin-bottom:20px; display:block; }
+  .success-title { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--white); margin-bottom:8px; }
+  .success-sub { color:var(--muted); font-size:14px; line-height:1.7; }
+
+  /* INFOBOX */
+  .infobox {
+    background:rgba(245,200,66,.05); border:1px solid rgba(245,200,66,.18);
+    border-radius:10px; padding:12px 16px; font-size:12px;
+    line-height:1.7; color:var(--muted); margin-bottom:20px;
+  }
+  .infobox strong { color:var(--gold); }
+
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  @media(max-width:600px) {
+    .form-wrap { padding:28px 16px 60px; }
+    .hero { padding:48px 20px 36px; }
+    .rol-grid { grid-template-columns:1fr; }
+    .btn-row { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="badge">⚙️ Selección de Staff · LVE Spain</div>
+    <div class="hero-title">ÚNETE AL<br><span class="g">STAFF LVE</span></div>
+    <p class="hero-sub">Completa el cuestionario para optar a un puesto en el equipo organizador de la Liga Virtual Española.</p>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- STEP INDICATOR -->
+  <div class="steps">
+    <div class="step-item active" id="step-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Rol</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-item" id="step-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">General</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-item" id="step-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Específico</div>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-item" id="step-4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Enviar</div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: ROL -->
+  <div class="form-page active" id="page-1">
+    <div class="section-eye">Paso 1 de 4</div>
+    <div class="section-title">¿A qué rol <em>aspiras</em>?</div>
+    <p class="section-sub">Selecciona el puesto para el que quieres presentar tu candidatura. Cada rol tiene preguntas específicas.</p>
+
+    <div class="rol-grid">
+      <div class="rol-card" onclick="selectRol('arbitro', this)">
+        <span class="rol-icon">⚖️</span>
+        <div class="rol-name">Árbitro</div>
+        <div class="rol-desc">Resuelves incidencias, aplicas sanciones y gestionas apelaciones</div>
+      </div>
+      <div class="rol-card" onclick="selectRol('app', this)">
+        <span class="rol-icon">📊</span>
+        <div class="rol-name">Gestor de App</div>
+        <div class="rol-desc">Actualizas resultados, estadísticas y clasificaciones en 4League</div>
+      </div>
+      <div class="rol-card" onclick="selectRol('cm', this)">
+        <span class="rol-icon">📱</span>
+        <div class="rol-name">Community Manager</div>
+        <div class="rol-desc">Llevas las redes sociales y creas contenido para @lve_esp</div>
+      </div>
+      <div class="rol-card" onclick="selectRol('multi', this)">
+        <span class="rol-icon">⭐</span>
+        <div class="rol-name">Varios roles</div>
+        <div class="rol-desc">Puedo cubrir más de un rol según las necesidades del staff</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goPage(2)" id="btn-next-1" disabled>Continuar →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2: GENERAL -->
+  <div class="form-page" id="page-2">
+    <div class="section-eye">Paso 2 de 4</div>
+    <div class="section-title">Preguntas <em>generales</em></div>
+    <p class="section-sub">Cuéntanos quién eres y cuál es tu disponibilidad.</p>
+
+    <div class="field">
+      <label>Nick / Nombre en LVE <span class="req">*</span></label>
+      <input type="text" id="f-nick" placeholder="Tu nombre o nick en el juego" />
+    </div>
+
+    <div class="field">
+      <label>Número de WhatsApp <span class="req">*</span></label>
+      <input type="text" id="f-phone" placeholder="Para contactarte si eres seleccionado" />
+    </div>
+
+    <div class="field">
+      <label>¿Cuántas temporadas llevas en LVE o en ligas de Clubes Pro? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt" onclick="selectRadio(this, 'temporadas')"><div class="radio-dot"></div><span class="radio-text">Es mi primera temporada</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'temporadas')"><div class="radio-dot"></div><span class="radio-text">1-2 temporadas</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'temporadas')"><div class="radio-dot"></div><span class="radio-text">3-5 temporadas</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'temporadas')"><div class="radio-dot"></div><span class="radio-text">Más de 5 temporadas</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Eres o has sido capitán de algún equipo esta temporada? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt" onclick="selectRadio(this, 'capitan')"><div class="radio-dot"></div><span class="radio-text">Sí, soy capitán actualmente</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'capitan')"><div class="radio-dot"></div><span class="radio-text">Lo he sido pero ya no</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'capitan')"><div class="radio-dot"></div><span class="radio-text">No, nunca he sido capitán</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Cuántas horas al día puedes dedicar a tareas de staff? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt" onclick="selectRadio(this, 'horas')"><div class="radio-dot"></div><span class="radio-text">Menos de 1 hora</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'horas')"><div class="radio-dot"></div><span class="radio-text">1-2 horas</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'horas')"><div class="radio-dot"></div><span class="radio-text">2-4 horas</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'horas')"><div class="radio-dot"></div><span class="radio-text">Más de 4 horas</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Te comprometes a mantener el rol durante toda la temporada? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt" onclick="selectRadio(this, 'compromiso')"><div class="radio-dot"></div><span class="radio-text">Sí, me comprometo al 100%</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'compromiso')"><div class="radio-dot"></div><span class="radio-text">Sí, aunque puede haber semanas con menos disponibilidad</span></div>
+        <div class="radio-opt" onclick="selectRadio(this, 'compromiso')"><div class="radio-dot"></div><span class="radio-text">No estoy seguro/a</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>¿Por qué quieres formar parte del staff de LVE? <span class="req">*</span></label>
+      <textarea id="f-motivacion" placeholder="Cuéntanos tu motivación (mínimo 2-3 frases)..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goPage(1)">← Volver</button>
+      <button class="btn btn-primary" onclick="goPage(3)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3: ESPECÍFICO -->
+  <div class="form-page" id="page-3">
+    <div class="section-eye">Paso 3 de 4</div>
+    <div class="section-title">Preguntas <em>específicas</em></div>
+    <p class="section-sub" id="specific-sub">Preguntas sobre el rol que has elegido.</p>
+
+    <!-- ÁRBITRO -->
+    <div id="q-arbitro" style="display:none">
+      <div class="field-section-label">Sección: Árbitro / Juez</div>
+
+      <div class="field">
+        <label>¿Has leído la normativa completa de LVE? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'norm')"><div class="radio-dot"></div><span class="radio-text">Sí, la conozco bien</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'norm')"><div class="radio-dot"></div><span class="radio-text">La he leído pero no me la sé de memoria</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'norm')"><div class="radio-dot"></div><span class="radio-text">No la he leído aún</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Un equipo reclama un W.O. pero no tiene pruebas. ¿Qué harías? <span class="req">*</span></label>
+        <textarea placeholder="Explica cómo gestionarías esta situación..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Dos equipos tienen versiones distintas de un incidente. ¿Cómo lo resuelves? <span class="req">*</span></label>
+        <textarea placeholder="Describe tu proceso de resolución..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>¿Podrías sancionar a un amigo tuyo si incumple el reglamento? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'amigo')"><div class="radio-dot"></div><span class="radio-text">Sí, el reglamento es igual para todos</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'amigo')"><div class="radio-dot"></div><span class="radio-text">Dependería del caso</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'amigo')"><div class="radio-dot"></div><span class="radio-text">Me costaría, preferiría abstenerme</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Tienes experiencia resolviendo conflictos en otras ligas? <span class="req">*</span></label>
+        <textarea placeholder="Cuenta tu experiencia previa si la tienes..."></textarea>
+      </div>
+    </div>
+
+    <!-- APP -->
+    <div id="q-app" style="display:none">
+      <div class="field-section-label">Sección: Gestor de App 4League</div>
+
+      <div class="field">
+        <label>¿Has usado 4League antes? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'4league')"><div class="radio-dot"></div><span class="radio-text">Sí, la manejo bien</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'4league')"><div class="radio-dot"></div><span class="radio-text">La he visto pero no la he usado</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'4league')"><div class="radio-dot"></div><span class="radio-text">No la conozco, pero aprendo rápido</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Puedes actualizar resultados en menos de 24h tras cada partido? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'24h')"><div class="radio-dot"></div><span class="radio-text">Sí, sin problema</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'24h')"><div class="radio-dot"></div><span class="radio-text">La mayoría de veces sí</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'24h')"><div class="radio-dot"></div><span class="radio-text">Puede haber excepciones frecuentes</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Qué harías si un equipo te envía un resultado que no coincide con la captura? <span class="req">*</span></label>
+        <textarea placeholder="Explica cómo lo gestionarías..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>¿Tienes disponibilidad de miércoles a domingo? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'disp')"><div class="radio-dot"></div><span class="radio-text">Sí, todos los días</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'disp')"><div class="radio-dot"></div><span class="radio-text">La mayoría de días sí</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'disp')"><div class="radio-dot"></div><span class="radio-text">Algunos días tengo limitaciones</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CM -->
+    <div id="q-cm" style="display:none">
+      <div class="field-section-label">Sección: Community Manager</div>
+
+      <div class="field">
+        <label>¿Qué redes sociales manejas habitualmente? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'rrss')"><div class="radio-dot"></div><span class="radio-text">Instagram principalmente</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'rrss')"><div class="radio-dot"></div><span class="radio-text">Instagram + TikTok</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'rrss')"><div class="radio-dot"></div><span class="radio-text">Varias plataformas con soltura</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Usas Canva u otra herramienta de diseño? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'canva')"><div class="radio-dot"></div><span class="radio-text">Sí, uso Canva con soltura</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'canva')"><div class="radio-dot"></div><span class="radio-text">Uso otra herramienta (Photoshop, CapCut...)</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'canva')"><div class="radio-dot"></div><span class="radio-text">No uso herramientas de diseño</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Puedes comprometerte a publicar mínimo 3-4 veces por semana? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'posts')"><div class="radio-dot"></div><span class="radio-text">Sí, sin problema</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'posts')"><div class="radio-dot"></div><span class="radio-text">Sí, aunque alguna semana menos</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'posts')"><div class="radio-dot"></div><span class="radio-text">No puedo garantizarlo</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Tienes experiencia llevando redes de alguna comunidad o grupo? <span class="req">*</span></label>
+        <textarea placeholder="Cuéntanos tu experiencia previa si la tienes..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Propón una idea de contenido que publicarías para LVE esta semana <span class="req">*</span></label>
+        <textarea placeholder="Sé creativo/a — cuéntanos qué publicarías y por qué..."></textarea>
+      </div>
+    </div>
+
+    <!-- MULTI -->
+    <div id="q-multi" style="display:none">
+      <div class="field-section-label">Sección: Varios roles</div>
+      <div class="infobox">
+        💡 Has indicado que puedes cubrir <strong>más de un rol</strong>. Cuéntanos con detalle tus capacidades en cada área.
+      </div>
+
+      <div class="field">
+        <label>¿Qué roles podrías cubrir y con qué nivel? <span class="req">*</span></label>
+        <textarea placeholder="Ejemplo: Soy bueno gestionando la app y también podría llevar el Instagram de vez en cuando..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>¿Tienes experiencia en alguno de los roles específicos? <span class="req">*</span></label>
+        <textarea placeholder="Cuéntanos tu experiencia previa en organización de ligas, redes sociales, etc."></textarea>
+      </div>
+
+      <div class="field">
+        <label>¿Por cuál rol tienes mayor preferencia si hubiera que elegir? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="selectRadio(this,'pref')"><div class="radio-dot"></div><span class="radio-text">⚖️ Árbitro</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'pref')"><div class="radio-dot"></div><span class="radio-text">📊 Gestor de App</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'pref')"><div class="radio-dot"></div><span class="radio-text">📱 Community Manager</span></div>
+          <div class="radio-opt" onclick="selectRadio(this,'pref')"><div class="radio-dot"></div><span class="radio-text">Donde más falta haga</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goPage(2)">← Volver</button>
+      <button class="btn btn-primary" onclick="goPage(4)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4: CONFIRMAR -->
+  <div class="form-page" id="page-4">
+    <div class="section-eye">Paso 4 de 4</div>
+    <div class="section-title">Confirma tu <em>candidatura</em></div>
+    <p class="section-sub">Revisa que todo está correcto antes de enviar.</p>
+
+    <div id="summary-box" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;">Resumen de tu candidatura</div>
+      <div id="summary-content" style="font-size:13px;line-height:2;color:var(--text);"></div>
+    </div>
+
+    <div class="field">
+      <label>¿Alguna cosa más que quieras añadir?</label>
+      <textarea id="f-extra" placeholder="Cualquier información adicional que consideres relevante (opcional)..."></textarea>
+    </div>
+
+    <div class="infobox">
+      ✅ Al enviar confirmas que <strong>has leído el reglamento de LVE</strong>, que la información proporcionada es verídica y que te comprometes a respetar las normas del staff si eres seleccionado/a.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goPage(3)">← Volver</button>
+      <button class="btn btn-primary" onclick="submitForm()">🚀 Enviar candidatura</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="form-page" id="page-success">
+    <div class="success-box">
+      <span class="success-icon">🎉</span>
+      <div class="success-title">¡Candidatura enviada!</div>
+      <p class="success-sub">
+        Gracias por querer formar parte del staff de <strong style="color:var(--gold)">LVE Spain</strong>.<br><br>
+        La organización revisará tu candidatura y se pondrá en contacto contigo por WhatsApp en los próximos días.<br><br>
+        <span style="color:var(--gold)">@lve_esp</span> · Temporada 15
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let rolSeleccionado = '';
+const rolLabels = {
+  arbitro: '⚖️ Árbitro',
+  app: '📊 Gestor de App',
+  cm: '📱 Community Manager',
+  multi: '⭐ Varios roles'
+};
+
+function selectRol(rol, el) {
+  rolSeleccionado = rol;
+  document.querySelectorAll('.rol-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-next-1').disabled = false;
+}
+
+function selectRadio(el, group) {
+  document.querySelectorAll(`[onclick*="'${group}'"]`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function goPage(n) {
+  document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${n}`).classList.add('active');
+
+  // Update steps
+  for (let i = 1; i <= 4; i++) {
+    const s = document.getElementById(`step-${i}`);
+    s.classList.remove('active','done');
+    if (i < n) s.classList.add('done');
+    if (i === n) s.classList.add('active');
+  }
+  for (let i = 1; i <= 3; i++) {
+    const l = document.getElementById(`line-${i}`);
+    l.classList.toggle('done', i < n);
+  }
+
+  // Show specific questions
+  if (n === 3) {
+    ['arbitro','app','cm','multi'].forEach(r => {
+      document.getElementById(`q-${r}`).style.display = r === rolSeleccionado ? 'block' : 'none';
+    });
+  }
+
+  // Build summary
+  if (n === 4) {
+    const nick = document.getElementById('f-nick').value || '—';
+    const phone = document.getElementById('f-phone').value || '—';
+    document.getElementById('summary-content').innerHTML = `
+      <div><span style="color:var(--muted)">Rol solicitado:</span> <strong>${rolLabels[rolSeleccionado] || '—'}</strong></div>
+      <div><span style="color:var(--muted)">Nick:</span> <strong>${nick}</strong></div>
+      <div><span style="color:var(--muted)">WhatsApp:</span> <strong>${phone}</strong></div>
+    `;
+  }
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitForm() {
+  document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-success').classList.add('active');
+  // Update all steps to done
+  for (let i=1;i<=4;i++) {
+    const s = document.getElementById(`step-${i}`);
+    s.classList.remove('active'); s.classList.add('done');
+  }
+  for (let i=1;i<=3;i++) document.getElementById(`line-${i}`).classList.add('done');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
